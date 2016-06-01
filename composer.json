@@ -1,0 +1,14 @@
+{
+    "name": "youzan/zan-installer",
+    "description": "Youzan ZanPhp Installer",
+    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/thephpleague/climate.git"
+        }
+    ],
+    "require": {
+        "league/climate": "dev-master"
+    }
+}
