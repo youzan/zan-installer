@@ -11,3 +11,4 @@ Thumbs.db
 *.sublime-project
 .idea/
 /vendor/
+/output/
