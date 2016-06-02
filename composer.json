@@ -27,6 +27,7 @@
     "require": {
         "league/climate": "dev-master"
     },
+    "minimum-stability": "dev",
     "bin": [
         "zan"
     ]
