@@ -16,14 +16,15 @@ use ZipArchive;
 class Installer
 {
     private $appName = 'zanphp-demo';
+    private $namespace = 'zanphp/zanhttp';
     private $config = [
         'http' => [
             'name' => 'zanhttp-latest',
-            'url' => 'https://github.com/youzan/zanhttp/archive/latest.zip',
+            'url' => 'https://github.com/youzan/zanhttp-boilerplate/archive/latest.zip',
         ],
         'tcp' => [
             'name' => 'zantcp-latest',
-            'url' => 'https://github.com/youzan/zantcp/archive/latest.zip',
+            'url' => 'https://github.com/youzan/zantcp-boilerplate/archive/latest.zip',
         ]
     ];
     private $climate;
@@ -43,7 +44,11 @@ class Installer
 
         $this->appName = $this->getAppNameFromInput();
 
+        $this->namespace = $this->getNamespaceFromInput();
+
         $this->directory = $this->getDirectoryFromInput();
+
+        $this->checkApplicationIsExist();
 
         $this->install();
     }
@@ -58,14 +63,22 @@ class Installer
 
     private function showWelcome()
     {
-        $this->climate->lightRed('Create a new ZanPhp application.');
+        $this->climate->lightRed("   __    __                                          ");
+        $this->climate->lightRed("  /\\ \\  /\\ \\                                         ");
+        $this->climate->lightRed("  \\ `\\`\\\\/'/ ___   __  __  ____      __      ___     ");
+        $this->climate->lightRed("   `\\ `\\ /' / __`\\/\\ \\/\\ \\/\\_ ,`\\  /'__`\\  /' _ `\\   ");
+        $this->climate->lightRed("     `\\ \\ \\/\\ \\L\\ \\ \\ \\_\\ \\/_/  /_/\\ \\L\\.\\_/\\ \\/\\ \\  ");
+        $this->climate->lightRed("       \\ \\_\\ \\____/\\ \\____/ /\\____\\ \\__/.\\_\\ \\_\\ \\_\\ ");
+        $this->climate->lightRed("        \\/_/\\/___/  \\/___/  \\/____/\\/__/\\/_/\\/_/\\/_/ ");
+
+        $this->climate->lightGreen('Create a new ZanPhp application.');
     }
 
     private function getAppTypeFromPrompt()
     {
         $type = $this->showAppTypePrompt();
         if (!$type) {
-            $this->climate->red('Please use <space> to select the application type!');
+            $this->climate->blue('Please use <space> to select the application type!');
             $type = $this->showAppTypePrompt();
         }
         return $type;
@@ -84,11 +97,25 @@ class Installer
 
     private function getAppNameFromInput()
     {
-        $input = $this->climate->lightGreen()->input("Please input your application name:");
+        $msg = 'Your application name: (ex: ' . $this->appName . ')';
+        $input = $this->climate->lightGreen()->input($msg);
         $input->defaultTo($this->appName);
         $response = trim($input->prompt());
         if ($response === $this->appName) {
-            $this->climate->red('Use default application name: ' . $this->appName);
+            $this->climate->blue('Use default application name: ' . $this->appName);
+        }
+        var_dump($response);
+        return $response;
+    }
+
+    private function getNamespaceFromInput()
+    {
+        $msg = 'Your application namespace: (ex: ' . $this->namespace . ')';
+        $input = $this->climate->lightGreen()->input($msg);
+        $input->defaultTo($this->appName);
+        $response = trim($input->prompt());
+        if ($response === $this->appName) {
+            $this->climate->blue('Use default namespace: ' . $this->namespace);
         }
         return $response;
     }
@@ -97,7 +124,7 @@ class Installer
     {
         $directory = $this->showDirectoryInput();
 //        if ($directory && !is_dir($directory)) {
-//            $this->climate->red('[' . $directory . '] is not a valid directory!');
+//            $this->climate->blue('[' . $directory . '] is not a valid directory!');
 //            $directory = $this->showDirectoryInput();
 //        }
         if ($this->startsWith($directory, '~')) {
@@ -120,7 +147,7 @@ class Installer
         $input->defaultTo($default);
         $response = trim($input->prompt());
         if ($response === $default) {
-            $this->climate->red($default);
+            $this->climate->blue($default);
         }
         return $response;
     }
@@ -164,9 +191,13 @@ class Installer
         $zipFile = $this->getRandomFileName();
         $this->download($zipFile)
             ->extract($zipFile)
-            ->cleanUp($zipFile);
+            ->cleanUp($zipFile)
+            ->setAppName()
+            ->setNamespace();
+
         $this->climate->lightRed('Congratulations, your application has been generated to the following directory.');
         $this->climate->lightGreen($this->directory);
+        $this->climate->lightRed('See ' . $this->directory . 'README.md for information on how to run.!');
     }
 
     private function getRandomFileName()
@@ -178,13 +209,15 @@ class Installer
     {
         $url = $this->getConfig($this->type)['url'];
         if (!$url) {
-            throw new RuntimeException('Error download url', $url);
+            $this->climate->lightRed('ERROR: Download url error!');
+            exit();
         }
 
         $this->climate->lightGreen('Downloading the source code archive ...');
+
         $res = file_get_contents($url);
         if (false === $res) {
-            $this->climate->red('Download fail :(');
+            $this->climate->lightRed('ERROR: Download code fail :(');
             exit();
         }
         file_put_contents($zipFile, $res);
@@ -210,6 +243,37 @@ class Installer
         return $this;
     }
 
+    private function updateFileContent($targetFile, $key, $value)
+    {
+        $code = file_get_contents($targetFile);
+        if (false === $code) {
+            $this->climate->blue('Set %s fail :(', $key);
+            exit();
+        }
+
+        $code = str_replace($key, $value, $code);
+        if (false === file_put_contents($targetFile, $code)) {
+            $this->climate->blue('Set %s fail :(', $key);
+            exit();
+        }
+    }
+
+    private function setAppName()
+    {
+        $targetFile = $this->directory . '/init/app.php';
+        $this->updateFileContent($targetFile, '{{APP_NAME}}', $this->appName);
+
+        return $this;
+    }
+
+    private function setNamespace()
+    {
+        $targetFile = $this->directory . 'composer.json';
+        $this->updateFileContent($targetFile, '{{NAMESPACE}}', $this->namespace);
+
+        return $this;
+    }
+
     private function getDirectory($dir)
     {
         if (!is_dir($dir)) {
@@ -226,6 +290,15 @@ class Installer
         @unlink($zipFile);
 
         return $this;
+    }
+
+    private function checkApplicationIsExist()
+    {
+        if (is_dir($this->directory)) {
+            $this->climate->lightRed('ERROR: Application already exists!');
+            $this->climate->lightRed($this->directory);
+            exit();
+        }
     }
 
 }
