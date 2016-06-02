@@ -13,7 +13,6 @@
             "email": "agalwood.net@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "Zan\\Installer\\Console\\": "src/"
