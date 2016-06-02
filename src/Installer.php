@@ -19,11 +19,11 @@ class Installer
     private $namespace = 'zanphp/zanhttp';
     private $config = [
         'http' => [
-            'name' => 'zanhttp-latest',
+            'name' => 'zanhttp-boilerplate-latest',
             'url' => 'https://github.com/youzan/zanhttp-boilerplate/archive/latest.zip',
         ],
         'tcp' => [
-            'name' => 'zantcp-latest',
+            'name' => 'zantcp-boilerplate-latest',
             'url' => 'https://github.com/youzan/zantcp-boilerplate/archive/latest.zip',
         ]
     ];
