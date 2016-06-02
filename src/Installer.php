@@ -17,8 +17,14 @@ class Installer
 {
     private $appName = 'zanphp-demo';
     private $config = [
-        'http' => 'http://localhost/download/http.zip',
-        'tcp' => 'http://localhost/download/tcp.zip',
+        'http' => [
+            'name' => 'zanhttp-latest',
+            'url' => 'https://github.com/youzan/zanhttp/archive/latest.zip',
+        ],
+        'tcp' => [
+            'name' => 'zantcp-latest',
+            'url' => 'https://github.com/youzan/zantcp/archive/latest.zip',
+        ]
     ];
     private $climate;
     private $type;
@@ -40,6 +46,14 @@ class Installer
         $this->directory = $this->getDirectoryFromInput();
 
         $this->install();
+    }
+
+    private function getConfig($type)
+    {
+        if (!isset($this->config[$type])) {
+            throw new RuntimeException('Config type error: ', $type);
+        }
+        return $this->config[$type];
     }
 
     private function showWelcome()
@@ -105,6 +119,9 @@ class Installer
         $default = getcwd() . '/output/';
         $input->defaultTo($default);
         $response = trim($input->prompt());
+        if ($response === $default) {
+            $this->climate->red($default);
+        }
         return $response;
     }
 
@@ -154,26 +171,52 @@ class Installer
 
     private function getRandomFileName()
     {
-        return getcwd() . '/zan_' . md5(time() . uniqid()) . '.zip';
+        return getcwd() . '/tmp/zan_' . md5(time() . uniqid()) . '.zip';
     }
 
     private function download($zipFile)
     {
-        $url = $this->config[$this->type];
-        file_put_contents($zipFile, file_get_contents($url));
+        $url = $this->getConfig($this->type)['url'];
+        if (!$url) {
+            throw new RuntimeException('Error download url', $url);
+        }
+
+        $this->climate->lightGreen('Downloading the source code archive ...');
+        $res = file_get_contents($url);
+        if (false === $res) {
+            $this->climate->red('Download fail :(');
+            exit();
+        }
+        file_put_contents($zipFile, $res);
 
         return $this;
     }
 
     private function extract($zipFile)
     {
+        $this->climate->lightGreen('Extracting archive ...');
         $archive = new ZipArchive;
 
-        $archive->open($zipFile);
-        $archive->extractTo($this->directory);
-        $archive->close();
+        $tmpDirectory = $this->getDirectory(getcwd() . '/tmp/');
 
+        if (true === $archive->open($zipFile)) {
+            $archive->extractTo($tmpDirectory);
+            $archive->close();
+        }
+
+        $tmpDirectory .= $this->getConfig($this->type)['name'];
+        $targetDirectory = $this->getDirectory($this->directory);
+        rename($tmpDirectory, $targetDirectory);
         return $this;
+    }
+
+    private function getDirectory($dir)
+    {
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+            chmod($dir, 0755);
+        }
+        return $dir;
     }
 
     private function cleanUp($zipFile)
