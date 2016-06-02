@@ -10,6 +10,7 @@
 namespace Zan\Installer\Console;
 
 use League\CLImate\CLImate;
+use RuntimeException;
 use ZipArchive;
 
 class Installer
