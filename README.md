@@ -43,6 +43,10 @@ following directory.
 See ~/Sites/demo/README.md for information on how to run.
 ```
 
+## Also see
+- [Youzan php framework &#9992;](https://github.com/youzan/zan) 
+- [ZanPhp HTTP demo for zan framework &#9992;](https://github.com/youzan/zanhttp)
+
 ## License
 The zan-installer is open-sourced software licensed under the Apache-2.0 license.
 
