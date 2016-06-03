@@ -104,7 +104,6 @@ class Installer
         if ($response === $this->appName) {
             $this->climate->blue('Use default application name: ' . $this->appName);
         }
-        var_dump($response);
         return $response;
     }
 
@@ -131,7 +130,7 @@ class Installer
             $directory = str_replace('~', $this->getUserHomePath(), $directory);
         }
         if (!$this->startsWith($directory, '/')) {
-            $directory = getcwd() . '/output/' . $directory;
+            $directory = getcwd() . $directory;
         }
         if (!$this->endsWith($directory, '/')) {
             $directory .= '/';
@@ -143,7 +142,7 @@ class Installer
     private function showDirectoryInput()
     {
         $input = $this->climate->lightGreen()->input("Please input a output directory:");
-        $default = getcwd() . '/output/';
+        $default = getcwd();
         $input->defaultTo($default);
         $response = trim($input->prompt());
         if ($response === $default) {
@@ -197,12 +196,12 @@ class Installer
 
         $this->climate->lightRed('Congratulations, your application has been generated to the following directory.');
         $this->climate->lightGreen($this->directory);
-        $this->climate->lightRed('See ' . $this->directory . 'README.md for information on how to run.!');
+        $this->climate->lightRed('See ' . $this->directory . 'README.md for information on how to run.');
     }
 
     private function getRandomFileName()
     {
-        return getcwd() . '/tmp/zan_' . md5(time() . uniqid()) . '.zip';
+        return getcwd() . '/zan_' . md5(time() . uniqid()) . '.zip';
     }
 
     private function download($zipFile)
@@ -230,14 +229,14 @@ class Installer
         $this->climate->lightGreen('Extracting archive ...');
         $archive = new ZipArchive;
 
-        $tmpDirectory = $this->getDirectory(getcwd() . '/tmp/');
+        $tmpDirectory = getcwd();
 
         if (true === $archive->open($zipFile)) {
             $archive->extractTo($tmpDirectory);
             $archive->close();
         }
 
-        $tmpDirectory .= $this->getConfig($this->type)['name'];
+        $tmpDirectory .= '/' . $this->getConfig($this->type)['name'];
         $targetDirectory = $this->getDirectory($this->directory);
         rename($tmpDirectory, $targetDirectory);
         return $this;
@@ -247,20 +246,20 @@ class Installer
     {
         $code = file_get_contents($targetFile);
         if (false === $code) {
-            $this->climate->blue('Set %s fail :(', $key);
+            $this->climate->blue('Set ' . $key . ' fail :(');
             exit();
         }
 
         $code = str_replace($key, $value, $code);
         if (false === file_put_contents($targetFile, $code)) {
-            $this->climate->blue('Set %s fail :(', $key);
+            $this->climate->blue('Set ' . $key . ' fail :(');
             exit();
         }
     }
 
     private function setAppName()
     {
-        $targetFile = $this->directory . '/init/app.php';
+        $targetFile = $this->directory . 'init/app.php';
         $this->updateFileContent($targetFile, '{{APP_NAME}}', $this->appName);
 
         return $this;
