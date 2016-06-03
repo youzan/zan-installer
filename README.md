@@ -43,4 +43,6 @@ following directory.
 See ~/Sites/demo/README.md for information on how to run.
 ```
 
+## License
+The zan-installer is open-sourced software licensed under the Apache-2.0 license.
 
