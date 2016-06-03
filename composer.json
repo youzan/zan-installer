@@ -18,16 +18,9 @@
             "Zan\\Installer\\Console\\": "src/"
         }
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/thephpleague/climate.git"
-        }
-    ],
     "require": {
-        "league/climate": "dev-master"
+        "league/climate": "~3.2"
     },
-    "minimum-stability": "dev",
     "bin": [
         "zan"
     ]
