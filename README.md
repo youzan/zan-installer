@@ -16,6 +16,13 @@ composer global require youzan/zan-installer
 ```
 The composer repository on packagist.org: [youzan/zan-installer](https://packagist.org/packages/youzan/zan-installer) 。
 
+## Update
+Use the following command to update zan-installer:
+
+```bash
+composer global update
+```
+
 
 ## Use
 Now, you can open your favorite Terminal tool, type `zan` to use!
