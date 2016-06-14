@@ -51,6 +51,8 @@ class Installer
         $this->checkApplicationIsExist();
 
         $this->install();
+
+        $this->composer();
     }
 
     private function getConfig($type)
@@ -122,19 +124,18 @@ class Installer
     private function getDirectoryFromInput()
     {
         $directory = $this->showDirectoryInput();
-//        if ($directory && !is_dir($directory)) {
-//            $this->climate->blue('[' . $directory . '] is not a valid directory!');
-//            $directory = $this->showDirectoryInput();
-//        }
         if ($this->startsWith($directory, '~')) {
             $directory = str_replace('~', $this->getUserHomePath(), $directory);
         }
+
         if (!$this->startsWith($directory, '/')) {
             $directory = getcwd() . $directory;
         }
+
         if (!$this->endsWith($directory, '/')) {
             $directory .= '/';
         }
+
         $result = $directory . $this->appName . '/';
         return $result;
     }
@@ -298,6 +299,17 @@ class Installer
             $this->climate->lightRed($this->directory);
             exit();
         }
+    }
+
+    private function composer()
+    {
+        $this->climate->lightGreen('Composer installing...');
+        $cmd = 'cd ' . $this->directory . ' && composer install';
+        $output = shell_exec($cmd);
+        if (empty($output)) {
+            return;
+        }
+        $this->climate->lightRed('ERROR: ' . $output);
     }
 
 }
