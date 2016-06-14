@@ -50,6 +50,14 @@ Congratulations, your application has been generated to the
 following directory.
 ~/Sites/demo/
 See ~/Sites/demo/README.md for information on how to run.
+Composer installing...
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+  - Installing zanphp/zan (dev-master o1o0x2x4)
+    Cloning b6d8d443a7a3545a3d1796b39e54fcbc2d276a10
+
+Writing lock file
+Generating autoload files
 ```
 
 ## Also see
