@@ -19,12 +19,10 @@ class Installer
     private $namespace = 'zanphp/zanhttp';
     private $config = [
         'http' => [
-            'name' => 'zanhttp-boilerplate-latest',
-            'url' => 'https://github.com/youzan/zanhttp-boilerplate/archive/latest.zip',
+            'api' => 'https://api.github.com/repos/youzan/zanhttp-boilerplate/releases/latest',
         ],
         'tcp' => [
-            'name' => 'zantcp-boilerplate-latest',
-            'url' => 'https://github.com/youzan/zantcp-boilerplate/archive/latest.zip',
+            'api' => 'https://api.github.com/repos/youzan/zantcp-boilerplate/releases/latest',
         ]
     ];
     private $climate;
@@ -207,21 +205,13 @@ class Installer
 
     private function download($zipFile)
     {
-        $url = $this->getConfig($this->type)['url'];
-        if (!$url) {
-            $this->climate->lightRed('ERROR: Download url error!');
-            exit();
-        }
-
         $this->climate->lightGreen('Downloading the source code archive ...');
 
-        $res = file_get_contents($url);
+        $res = GithubBot::download($this->getConfig($this->type)['api'], 'original', $zipFile);
         if (false === $res) {
             $this->climate->lightRed('ERROR: Download code fail :(');
             exit();
         }
-        file_put_contents($zipFile, $res);
-
         return $this;
     }
 
@@ -233,14 +223,25 @@ class Installer
         $tmpDirectory = getcwd();
 
         if (true === $archive->open($zipFile)) {
+            $innerDirName = $this->getInnerDirName($archive);
             $archive->extractTo($tmpDirectory);
             $archive->close();
         }
 
-        $tmpDirectory .= '/' . $this->getConfig($this->type)['name'];
+        $tmpDirectory .= '/' . $innerDirName;
         $targetDirectory = $this->getDirectory($this->directory);
         rename($tmpDirectory, $targetDirectory);
         return $this;
+    }
+
+    private function getInnerDirName($archive)
+    {
+        if ($archive->numFiles == 0) {
+            throw new RuntimeException('ERROR: Get inner dir name fail.');
+        }
+        $stat = $archive->statIndex(0);
+        $result = basename($stat['name']);
+        return $result;
     }
 
     private function updateFileContent($targetFile, $key, $value)
