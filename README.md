@@ -1,4 +1,4 @@
-# Youzan Zan Php Installer
+# Youzan Zan PHP Installer
 
 ## Installation
 The recommended way to install zan-installer is through
