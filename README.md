@@ -1,4 +1,4 @@
-# Youzan ZanPhp Installer
+# Youzan Zan Php Installer
 
 ## Installation
 The recommended way to install zan-installer is through
@@ -61,7 +61,7 @@ Generating autoload files
 ```
 
 ## Also see
-- [Youzan php framework &#9992;](https://github.com/youzan/zan) 
+- [Youzan Zan PHP framework &#9992;](https://github.com/youzan/zan) 
 - [ZanPhp HTTP demo for zan framework &#9992;](https://github.com/youzan/zanhttp)
 
 ## License
