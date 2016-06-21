@@ -19,10 +19,12 @@ class Installer
     private $namespace = 'zanphp/zanhttp';
     private $config = [
         'http' => [
-            'api' => 'https://api.github.com/repos/youzan/zanhttp-boilerplate/releases/latest',
+            'name' => 'zanhttp-boilerplate-master',
+            'url' => 'https://codeload.github.com/youzan/zanhttp-boilerplate/zip/master',
         ],
         'tcp' => [
-            'api' => 'https://api.github.com/repos/youzan/zantcp-boilerplate/releases/latest',
+            'name' => 'zantcp-boilerplate-master',
+            'url' => 'https://codeload.github.com/youzan/zantcp-boilerplate/zip/master',
         ]
     ];
     private $climate;
@@ -207,11 +209,14 @@ class Installer
     {
         $this->climate->lightGreen('Downloading the source code archive ...');
 
-        $res = GithubBot::download($this->getConfig($this->type)['api'], 'original', $zipFile);
+        $url = $this->getConfig($this->type)['url'];
+        $res = file_get_contents($url);
         if (false === $res) {
             $this->climate->lightRed('ERROR: Download code fail :(');
             exit();
         }
+        file_put_contents($zipFile, $res);
+
         return $this;
     }
 
