@@ -21,10 +21,12 @@ class Installer
         'http' => [
             'name' => 'zanhttp-boilerplate-master',
             'url' => 'https://codeload.github.com/youzan/zanhttp-boilerplate/zip/master',
+            'execute' => 'httpd'
         ],
         'tcp' => [
             'name' => 'zantcp-boilerplate-master',
             'url' => 'https://codeload.github.com/youzan/zantcp-boilerplate/zip/master',
+            'execute' => 'nova'
         ]
     ];
     private $climate;
@@ -193,7 +195,8 @@ class Installer
             ->extract($zipFile)
             ->cleanUp($zipFile)
             ->setAppName()
-            ->setNamespace();
+            ->setNamespace()
+            ->setExecute();
 
         $this->climate->lightRed('Congratulations, your application has been generated to the following directory.');
         $this->climate->lightGreen($this->directory);
@@ -277,6 +280,13 @@ class Installer
         $targetFile = $this->directory . 'composer.json';
         $this->updateFileContent($targetFile, '{{NAMESPACE}}', $this->namespace);
 
+        return $this;
+    }
+
+    private function setExecute()
+    {
+        $targetFile = $this->directory . 'bin/' . $this->getConfig($this->type)['execute'];
+        chmod($targetFile, 0777);
         return $this;
     }
 
