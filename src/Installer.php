@@ -59,6 +59,9 @@ class Installer
 
     private function getConfig($type)
     {
+        if (NULL == $type) {
+            $type = 'http';
+        }
         if (!isset($this->config[$type])) {
             throw new RuntimeException('Config type error: ', $type);
         }
@@ -82,8 +85,8 @@ class Installer
     {
         $type = $this->showAppTypePrompt();
         if (!$type) {
-            $this->climate->blue('Please use <space> to select the application type!');
-            $type = $this->showAppTypePrompt();
+            $this->climate->lightRed('Please use <space> to select the application type!');
+            $type = $this->getAppTypeFromPrompt();
         }
         return $type;
     }
