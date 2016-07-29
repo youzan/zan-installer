@@ -16,7 +16,8 @@ use ZipArchive;
 class Installer
 {
     private $appName = 'zanphp-demo';
-    private $namespace = 'zanphp/zanhttp';
+    private $composerName = 'zanphp/zanhttp';
+    private $namespace = 'Com\\Youzan\\ZanHttpDemo\\';
     private $config = [
         'http' => [
             'name' => 'zanhttp-boilerplate-master',
@@ -42,15 +43,22 @@ class Installer
         $this->climate = new CLImate();
         $this->showWelcome();
 
+        $this->wizard();
+    }
+
+    private function wizard()
+    {
         $this->type = $this->getAppTypeFromPrompt();
 
         $this->appName = $this->getAppNameFromInput();
 
-        $this->namespace = $this->getNamespaceFromInput();
-
         $this->directory = $this->getDirectoryFromInput();
 
         $this->checkApplicationIsExist();
+
+        $this->composerName = $this->getComposerNameFromInput();
+
+        $this->namespace = $this->getNamespaceFromInput();
 
         $this->install();
 
@@ -114,16 +122,48 @@ class Installer
         return $response;
     }
 
+    private function getComposerNameFromInput()
+    {
+        $msg = 'Your composer name: (ex: ' . $this->composerName . ')';
+        $input = $this->climate->lightGreen()->input($msg);
+        $input->defaultTo($this->composerName);
+        $response = trim($input->prompt());
+        if ($response === $this->composerName) {
+            $this->climate->blue('Use composer name: ' . $this->composerName);
+        }
+        return $response;
+    }
+
     private function getNamespaceFromInput()
     {
         $msg = 'Your application namespace: (ex: ' . $this->namespace . ')';
         $input = $this->climate->lightGreen()->input($msg);
-        $input->defaultTo($this->appName);
+        $input->defaultTo($this->namespace);
         $response = trim($input->prompt());
-        if ($response === $this->appName) {
+        if ($response === $this->namespace) {
             $this->climate->blue('Use default namespace: ' . $this->namespace);
         }
+        if (false == strpos($response, "\\")) {
+            $this->climate->lightRed('ERROR: The namespace you provided is invalid, please re-enter.');
+            $response = $this->getNamespaceFromInput();
+        }
+        $response = $this->fixNamespace($response);
         return $response;
+    }
+
+    private function fixNamespace($namespace)
+    {
+        $arr = explode("\\", $namespace);
+        $arr = array_filter($arr);
+        $namespace = join($arr, '\\');
+        $namespace .= "\\";
+        return $namespace;
+    }
+
+    private function convertToComposerNamespace($namespace)
+    {
+        $namespace = str_replace('\\', '\\\\', $namespace);
+        return $namespace;
     }
 
     private function getDirectoryFromInput()
@@ -198,7 +238,9 @@ class Installer
             ->extract($zipFile)
             ->cleanUp($zipFile)
             ->setAppName()
-            ->setNamespace()
+            ->setComposer()
+            ->setSourceNamespace()
+            ->setupTestcase()
             ->setExecute();
 
         $this->climate->lightRed('Congratulations, your application has been generated to the following directory.');
@@ -278,10 +320,37 @@ class Installer
         return $this;
     }
 
-    private function setNamespace()
+    private function setComposer()
     {
         $targetFile = $this->directory . 'composer.json';
-        $this->updateFileContent($targetFile, '{{NAMESPACE}}', $this->namespace);
+
+        $this->updateFileContent($targetFile, '{{NAME}}', $this->composerName);
+
+        $composerNamespace = $this->convertToComposerNamespace($this->namespace);
+        $this->updateFileContent($targetFile, '{{NAMESPACE}}', $composerNamespace);
+
+        return $this;
+    }
+
+    private function setSourceNamespace()
+    {
+        $controller = $this->directory . 'src/Controller/Demo/IndexController.php';
+        $this->updateFileContent($controller, '{{NAMESPACE}}', $this->namespace);
+
+        $service = $this->directory . 'src/DemoModule/Service/DemoService.php';
+        $this->updateFileContent($service, '{{NAMESPACE}}', $this->namespace);
+
+        return $this;
+    }
+
+    private function setupTestcase()
+    {
+        $testName = $this->appName . 'Test';
+        $bootstrap = $this->directory . 'tests/bootstrap.php';
+        $this->updateFileContent($bootstrap, '{{APP_TEST_NAME}}', $testName);
+
+        $test = $this->directory . 'tests/DemoModule/DemoTest.php';
+        $this->updateFileContent($test, '{{NAMESPACE}}', $this->namespace);
 
         return $this;
     }
