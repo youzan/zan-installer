@@ -28,7 +28,7 @@ composer global update
 Now, you can open your favorite Terminal tool, type `zan` to use!
 
 ```bash
-~/Sites zan↵
+/data/www zan↵
    __    __
   /\ \  /\ \
   \ `\`\\/'/ ___   __  __  ____      __      ___
@@ -41,20 +41,20 @@ Which type application would you create? (use <space> to select)
 ❯ ● HTTP
   ○ TCP
 Your application name: (ex: zanphp-demo) demo
-Your application namespace: (ex: zanphp/zanhttp) youzan/demo
 Please input a output directory:
-~/Sites
+/data/www
+Your composer name: (ex: zanphp/zanhttp) youzan/demo
+Your application namespace: (ex: Com\Youzan\ZanHttpDemo\) Com\Youzan\Demo\
 Downloading the source code archive ...
 Extracting archive ...
-Congratulations, your application has been generated to the 
-following directory.
-~/Sites/demo/
-See ~/Sites/demo/README.md for information on how to run.
+Congratulations, your application has been generated to the following directory.
+/data/www/demo/
+See /data/www/demo/README.md for information on how to run.
 Composer installing...
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
-  - Installing zanphp/zan (dev-master o1o0x2x4)
-    Cloning b6d8d443a7a3545a3d1796b39e54fcbc2d276a10
+  - Installing zanphp/zan (dev-master ebf9014)
+    Cloning ebf901442054c358da4c2e9188cd8b9f4acc7e10
 
 Writing lock file
 Generating autoload files
