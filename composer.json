@@ -1,6 +1,7 @@
 {
     "name": "youzan/zan-installer",
     "description": "Youzan ZanPhp Installer",
+    "version": "1.0.6",
     "keywords": [
         "youzan",
         "zan",
