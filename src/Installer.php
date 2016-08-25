@@ -284,6 +284,8 @@ class Installer
         $tmpDirectory .= '/' . $innerDirName;
         $targetDirectory = $this->getDirectory($this->directory);
         rename($tmpDirectory, $targetDirectory);
+        chmod($targetDirectory, 0755);
+
         return $this;
     }
 
@@ -364,10 +366,6 @@ class Installer
 
     private function getDirectory($dir)
     {
-        if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
-            chmod($dir, 0755);
-        }
         return $dir;
     }
 
