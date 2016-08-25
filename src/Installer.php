@@ -174,7 +174,9 @@ class Installer
         }
 
         if (!$this->startsWith($directory, '/')) {
-            $directory = getcwd() . $directory;
+            $cwd = getcwd();
+            $cwd = $this->endsWith($cwd, '/') ? $cwd : $cwd . '/' ;
+            $directory = $cwd . $directory;
         }
 
         if (!$this->endsWith($directory, '/')) {
