@@ -285,7 +285,7 @@ class Installer
 
         $tmpDirectory .= '/' . $innerDirName;
         $targetDirectory = $this->getDirectory($this->directory);
-        @unlink($targetDirectory);
+        @rmdir($targetDirectory);
         @rename($tmpDirectory, $targetDirectory);
         return $this;
     }
