@@ -41,9 +41,63 @@ class Installer
         }
 
         $this->climate = new CLImate();
+        $this->climate->arguments->add([
+            'x' => [
+                'prefix' => 'x',
+                'description' => 'Code boilerplate use Zan gitlab edition.',
+            ],
+            'version' => [
+                'prefix' => 'v',
+                'longPrefix' => 'version',
+                'description' => 'Show zan-installer version info.',
+                'noValue' => true,
+            ],
+            'help' => [
+                'prefix' => 'h',
+                'longPrefix' => 'help',
+                'description' => 'Prints a usage statement.',
+                'noValue' => true,
+            ],
+        ]);
+
+        $this->climate->arguments->parse();
+        $arguments = $this->climate->arguments;
+        if ($arguments->get('help')) {
+            $this->showUsage();
+            return;
+        }
+
+        if ($arguments->get('version')) {
+            $this->showVersion();
+            return;
+        }
+
+        if ($arguments->defined('x')) {
+            $this->x();
+        }
+
         $this->showWelcome();
 
         $this->wizard();
+    }
+
+    private function x()
+    {
+        $this->climate->lightRed("x.x ====> x-files ====> Code boilerplate use Zan gitlab edition.");
+        $this->config['http']['url'] = 'http://gitlab.qima-inc.com/nuomi/zanhttp-boilerplate/repository/archive.zip?ref=master';
+        $this->config['tcp']['url'] = 'http://gitlab.qima-inc.com/nuomi/zantcp-boilerplate/repository/archive.zip?ref=master';
+    }
+
+    private function showUsage()
+    {
+        $this->climate->usage();
+    }
+
+    private function showVersion()
+    {
+        $cmd = 'composer global show youzan/zan-installer';
+        $output = shell_exec($cmd);
+        $this->climate->lightGreen($output);
     }
 
     private function wizard()
@@ -175,7 +229,7 @@ class Installer
 
         if (!$this->startsWith($directory, '/')) {
             $cwd = getcwd();
-            $cwd = $this->endsWith($cwd, '/') ? $cwd : $cwd . '/' ;
+            $cwd = $this->endsWith($cwd, '/') ? $cwd : $cwd . '/';
             $directory = $cwd . $directory;
         }
 
