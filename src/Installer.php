@@ -9,6 +9,7 @@
 
 namespace Zan\Installer\Console;
 
+
 use League\CLImate\CLImate;
 use RuntimeException;
 use ZipArchive;
@@ -41,9 +42,64 @@ class Installer
         }
 
         $this->climate = new CLImate();
+        $this->climate->arguments->add([
+            'x' => [
+                'prefix' => 'x',
+                'description' => 'Code boilerplate use Zan gitlab edition.',
+            ],
+            'version' => [
+                'prefix' => 'v',
+                'longPrefix' => 'version',
+                'description' => 'Show zan-installer version info.',
+                'noValue' => true,
+            ],
+            'help' => [
+                'prefix' => 'h',
+                'longPrefix' => 'help',
+                'description' => 'Prints a usage statement.',
+                'noValue' => true,
+            ],
+        ]);
+
+        $this->climate->arguments->parse();
+        $arguments = $this->climate->arguments;
+        if ($arguments->get('help')) {
+            $this->showUsage();
+            return;
+        }
+
+        if ($arguments->get('version')) {
+            $this->showVersion();
+            return;
+        }
+
+        if ($arguments->defined('x')) {
+            $this->x();
+        }
+
         $this->showWelcome();
 
         $this->wizard();
+    }
+
+    private function x()
+    {
+        $this->climate->lightRed("x.x ====> x-files ====> Code boilerplate use Zan gitlab edition.");
+        $this->config['http']['url'] = 'http://gitlab.qima-inc.com/php-lib/zanhttp-boilerplate/repository/archive.zip?ref=master';
+        $this->config['tcp']['url'] = 'http://gitlab.qima-inc.com/php-lib/zantcp-boilerplate/repository/archive.zip?ref=master';
+    }
+
+    private function showUsage()
+    {
+        $this->climate->lightRed("Youzan Zan PHP Framework installer\n");
+        $this->climate->usage();
+    }
+
+    private function showVersion()
+    {
+        $cmd = 'composer global show youzan/zan-installer';
+        $output = shell_exec($cmd);
+        $this->climate->lightGreen($output);
     }
 
     private function wizard()
@@ -175,7 +231,7 @@ class Installer
 
         if (!$this->startsWith($directory, '/')) {
             $cwd = getcwd();
-            $cwd = $this->endsWith($cwd, '/') ? $cwd : $cwd . '/' ;
+            $cwd = $this->endsWith($cwd, '/') ? $cwd : $cwd . '/';
             $directory = $cwd . $directory;
         }
 
@@ -337,11 +393,11 @@ class Installer
 
     private function setSourceNamespace()
     {
-        $controller = $this->directory . 'src/Controller/Demo/IndexController.php';
-        $this->updateFileContent($controller, '{{NAMESPACE}}', $this->namespace);
-
-        $service = $this->directory . 'src/DemoModule/Service/DemoService.php';
-        $this->updateFileContent($service, '{{NAMESPACE}}', $this->namespace);
+        $sources = Dir::glob($this->directory, '*.php');
+        var_dump($sources);
+        foreach ($sources as $source) {
+            $this->updateFileContent($source, '{{NAMESPACE}}', $this->namespace);
+        }
 
         return $this;
     }
@@ -349,11 +405,13 @@ class Installer
     private function setupTestcase()
     {
         $testName = $this->appName . 'Test';
-        $bootstrap = $this->directory . 'tests/bootstrap.php';
-        $this->updateFileContent($bootstrap, '{{APP_TEST_NAME}}', $testName);
+        $sources = Dir::glob($this->directory, '*.php');
+        var_dump($sources);
+        foreach ($sources as $source) {
+            $this->updateFileContent($source, '{{APP_TEST_NAME}}', $testName);
+        }
 
-        $test = $this->directory . 'tests/DemoModule/DemoTest.php';
-        $this->updateFileContent($test, '{{NAMESPACE}}', $this->namespace);
+        return $this;
 
         return $this;
     }
