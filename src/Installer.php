@@ -85,8 +85,8 @@ class Installer
     private function x()
     {
         $this->climate->lightRed("x.x ====> x-files ====> Code boilerplate use Zan gitlab edition.");
-        $this->config['http']['url'] = 'http://gitlab.qima-inc.com/nuomi/zanhttp-boilerplate/repository/archive.zip?ref=master';
-        $this->config['tcp']['url'] = 'http://gitlab.qima-inc.com/nuomi/zantcp-boilerplate/repository/archive.zip?ref=master';
+        $this->config['http']['url'] = 'http://gitlab.qima-inc.com/php-lib/zanhttp-boilerplate/repository/archive.zip?ref=master';
+        $this->config['tcp']['url'] = 'http://gitlab.qima-inc.com/php-lib/zantcp-boilerplate/repository/archive.zip?ref=master';
     }
 
     private function showUsage()
