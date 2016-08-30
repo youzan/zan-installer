@@ -9,6 +9,7 @@
 
 namespace Zan\Installer\Console;
 
+
 use League\CLImate\CLImate;
 use RuntimeException;
 use ZipArchive;
@@ -90,6 +91,7 @@ class Installer
 
     private function showUsage()
     {
+        $this->climate->lightRed("Youzan Zan PHP Framework installer\n");
         $this->climate->usage();
     }
 
@@ -391,11 +393,11 @@ class Installer
 
     private function setSourceNamespace()
     {
-        $controller = $this->directory . 'src/Controller/Demo/IndexController.php';
-        $this->updateFileContent($controller, '{{NAMESPACE}}', $this->namespace);
-
-        $service = $this->directory . 'src/DemoModule/Service/DemoService.php';
-        $this->updateFileContent($service, '{{NAMESPACE}}', $this->namespace);
+        $sources = Dir::glob($this->directory, '*.php');
+        var_dump($sources);
+        foreach ($sources as $source) {
+            $this->updateFileContent($source, '{{NAMESPACE}}', $this->namespace);
+        }
 
         return $this;
     }
@@ -403,11 +405,13 @@ class Installer
     private function setupTestcase()
     {
         $testName = $this->appName . 'Test';
-        $bootstrap = $this->directory . 'tests/bootstrap.php';
-        $this->updateFileContent($bootstrap, '{{APP_TEST_NAME}}', $testName);
+        $sources = Dir::glob($this->directory, '*.php');
+        var_dump($sources);
+        foreach ($sources as $source) {
+            $this->updateFileContent($source, '{{APP_TEST_NAME}}', $testName);
+        }
 
-        $test = $this->directory . 'tests/DemoModule/DemoTest.php';
-        $this->updateFileContent($test, '{{NAMESPACE}}', $this->namespace);
+        return $this;
 
         return $this;
     }
