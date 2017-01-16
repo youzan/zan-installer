@@ -394,8 +394,8 @@ class Installer
     private function setSourceNamespace()
     {
         $sources = Dir::glob($this->directory, '*.php');
-        var_dump($sources);
         foreach ($sources as $source) {
+            $this->climate->lightGreen('Processing source file ' . $source);
             $this->updateFileContent($source, '{{NAMESPACE}}', $this->namespace);
         }
 
@@ -406,8 +406,8 @@ class Installer
     {
         $testName = $this->appName . 'Test';
         $sources = Dir::glob($this->directory, '*.php');
-        var_dump($sources);
         foreach ($sources as $source) {
+            $this->climate->lightGreen('Processing testcase file ' . $source);
             $this->updateFileContent($source, '{{APP_TEST_NAME}}', $testName);
         }
 
