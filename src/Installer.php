@@ -102,9 +102,19 @@ class Installer
         $this->climate->lightGreen($output);
     }
 
+    private function setDefaultName()
+    {
+        if ($this->type == 'tcp') {
+            $this->composerName = 'zanphp/zantcp';
+            $this->namespace = 'Com\\Youzan\\ZanTcpDemo\\';
+        }
+    }
+
     private function wizard()
     {
         $this->type = $this->getAppTypeFromPrompt();
+
+        $this->setDefaultName();
 
         $this->appName = $this->getAppNameFromInput();
 
