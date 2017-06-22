@@ -12,7 +12,7 @@ See [Composer Getting Started](https://getcomposer.org/doc/00-intro.md)
 
 
 ```bash
-composer global require youzan/zan-installer
+git clone https://github.com/youzan/zan-installer.git
 ```
 The composer repository on packagist.org: [youzan/zan-installer](https://packagist.org/packages/youzan/zan-installer) 。
 
@@ -20,7 +20,8 @@ The composer repository on packagist.org: [youzan/zan-installer](https://packagi
 Use the following command to update zan-installer:
 
 ```bash
-composer global update
+cd zan-installer
+composer install
 ```
 
 
@@ -28,7 +29,7 @@ composer global update
 Now, you can open your favorite Terminal tool, type `zan` to use!
 
 ```bash
-/data/www zan↵
+php zan↵
    __    __
   /\ \  /\ \
   \ `\`\\/'/ ___   __  __  ____      __      ___
