@@ -23,5 +23,11 @@
     },
     "bin": [
         "zan"
-    ]
+    ],
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
 }
