@@ -326,7 +326,13 @@ class Installer
         $this->climate->lightGreen('Downloading the source code archive ...');
 
         $url = $this->getConfig($this->type)['url'];
-        $res = file_get_contents($url);
+        $arrContextOptions=array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );
+        $res = file_get_contents($url, false, stream_context_create($arrContextOptions));
         if (false === $res) {
             $this->climate->lightRed('ERROR: Download code fail :(');
             exit();
@@ -368,7 +374,13 @@ class Installer
 
     private function updateFileContent($targetFile, $key, $value)
     {
-        $code = file_get_contents($targetFile);
+        $arrContextOptions=array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );
+        $code = file_get_contents($targetFile, false, stream_context_create($arrContextOptions));
         if (false === $code) {
             $this->climate->blue('Set ' . $key . ' fail :(');
             exit();
