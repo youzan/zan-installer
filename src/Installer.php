@@ -395,9 +395,10 @@ class Installer
 
     private function setAppName()
     {
-        $targetFile = $this->directory . 'init/app.php';
-        $this->updateFileContent($targetFile, '{{APP_NAME}}', $this->appName);
-
+        $sources = Dir::glob($this->directory, '*.php');
+        foreach ($sources as $source) {
+            $this->updateFileContent($source, '{{APP_NAME}}', $this->appName);
+        }
         return $this;
     }
 
