@@ -1,5 +1,7 @@
 # Youzan Zan PHP Installer
 
+[![License](https://img.shields.io/badge/license-apache2-blue.svg)](LICENSE)
+
 ## Installation
 The recommended way to install zan-installer is through
 [Composer](http://getcomposer.org).
