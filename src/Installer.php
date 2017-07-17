@@ -43,10 +43,6 @@ class Installer
 
         $this->climate = new CLImate();
         $this->climate->arguments->add([
-            'x' => [
-                'prefix' => 'x',
-                'description' => 'Code boilerplate use Zan gitlab edition.',
-            ],
             'version' => [
                 'prefix' => 'v',
                 'longPrefix' => 'version',
@@ -73,20 +69,9 @@ class Installer
             return;
         }
 
-        if ($arguments->defined('x')) {
-            $this->x();
-        }
-
         $this->showWelcome();
 
         $this->wizard();
-    }
-
-    private function x()
-    {
-        $this->climate->lightRed("x.x ====> x-files ====> Code boilerplate use Zan gitlab edition.");
-        $this->config['http']['url'] = 'http://gitlab.qima-inc.com/php-lib/zanhttp-boilerplate/repository/archive.zip?ref=master';
-        $this->config['tcp']['url'] = 'http://gitlab.qima-inc.com/php-lib/zantcp-boilerplate/repository/archive.zip?ref=master';
     }
 
     private function showUsage()
