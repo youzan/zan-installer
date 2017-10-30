@@ -29,7 +29,12 @@ class Installer
             'name' => 'zantcp-boilerplate-master',
             'url' => 'https://codeload.github.com/youzan/zantcp-boilerplate/zip/master',
             'execute' => 'nova'
-        ]
+        ],
+        'websocket' => [
+            'name' => 'zanwebsocket-boilerplate-master',
+            'url' => 'https://codeload.github.com/youzan/zanwebsocket-boilerplate/zip/master',
+            'execute' => 'websocket'
+        ],
     ];
     private $climate;
     private $type;
@@ -92,6 +97,9 @@ class Installer
         if ($this->type == 'tcp') {
             $this->composerName = 'zanphp/zantcp';
             $this->namespace = 'Com\\Youzan\\ZanTcpDemo\\';
+        } else if ($this->type = 'websocket') {
+            $this->composerName = 'zanphp/zanwebsocket';
+            $this->namespace = 'Com\\Youzan\\ZanWebSocketDemo\\';
         }
     }
 
@@ -155,6 +163,7 @@ class Installer
         $options = [
             'http' => 'HTTP',
             'tcp' => 'TCP',
+            'websocket' => 'WEBSOCKET',
         ];
         $input = $this->climate->lightGreen()->radio('Which type application would you create?', $options);
         $response = $input->prompt();
