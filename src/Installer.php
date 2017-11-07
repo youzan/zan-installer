@@ -97,7 +97,7 @@ class Installer
         if ($this->type == 'tcp') {
             $this->composerName = 'zanphp/zantcp';
             $this->namespace = 'Com\\Youzan\\ZanTcpDemo\\';
-        } else if ($this->type = 'websocket') {
+        } else if ($this->type == 'websocket') {
             $this->composerName = 'zanphp/zanwebsocket';
             $this->namespace = 'Com\\Youzan\\ZanWebSocketDemo\\';
         }
